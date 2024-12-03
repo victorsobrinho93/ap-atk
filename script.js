@@ -68,7 +68,8 @@ const engineSettings = {
             engineData[selectedEngine].atkValuePerStack === null &&
             engineData[selectedEngine].anomalyValuePerStack === null
         ) {
-            console.log("both are null??", selectedEngine);
+            state.engineAttackIncrease = 0;
+            state.engineAnomalyIncrease = 0;
             return false;
         }
 
