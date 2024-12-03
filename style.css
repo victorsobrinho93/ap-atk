@@ -1,0 +1,46 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+}
+
+body {
+    background-color: #eeeeee;
+}
+
+#container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem;
+}
+
+#buffs {
+    display: flex;
+    flex-basis: 33%;
+    gap: 1em;
+    flex-wrap: wrap;
+}
+
+#engine-form {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+select {
+    padding: 3px;
+}
+
+button {
+    padding: 8px;
+    font-weight: 600;
+    color: white;
+    background-color: black;
+}
+
+button:disabled {
+    background-color: grey;
+}
