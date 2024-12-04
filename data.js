@@ -83,3 +83,56 @@ const buffs = {
         attack: 600,
     },
 };
+
+const anomalyElement = {
+    jane: {
+        type: "Assault",
+        mod: 7.13,
+    },
+    piper: {
+        type: "Assault",
+        mod: 7.13,
+    },
+    burnice: {
+        type: "Burn",
+        mod: 0.5,
+    },
+    grace: {
+        type: "Shock",
+        mod: 1.25,
+    },
+    yanagi: {
+        type: "Shock",
+        mod: 1.25,
+    },
+};
+
+const state = {
+    baseCharacterAttack: 0,
+    baseEngineAttack: 0,
+    baseAttack: 0,
+    attackInput: 0,
+    attackIncreasePercentage: 0,
+    anomalyProficiency: 0,
+    anomalyIncrease: 0,
+    attackIncrease: 0,
+    attackBuffIncrease: 0,
+    anomalyBuffIncrease: 0,
+    engineAttackIncrease: 0,
+    engineAnomalyIncrease: 0,
+    enginePassiveBonusUptime: 0,
+    resetBuffs: function () {
+        this.attackBuffIncrease = 0;
+        this.anomalyBuffIncrease = 0;
+    },
+    calculate: function () {
+        const cAtk = characterData[document.getElementById("character").value];
+        const eAtk =
+            engineData[document.getElementById("w-engine").value]["baseAtk"];
+        this.baseAttack = cAtk + eAtk;
+        this.attackIncreasePercentage = +(
+            100 *
+            (this.attackInput / this.baseAttack - 1)
+        ).toFixed(3);
+    },
+};

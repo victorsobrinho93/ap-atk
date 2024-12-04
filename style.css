@@ -11,10 +11,16 @@ body {
 
 #container {
     display: flex;
+    gap: 3rem;
+}
+
+#base-calculation {
+    display: flex;
     flex-direction: column;
     justify-content: center;
     gap: 1rem;
     padding: 2rem;
+    flex-basis: 50%;
 }
 
 #buffs {
@@ -43,4 +49,39 @@ button {
 
 button:disabled {
     background-color: grey;
+}
+
+[data-tooltip]::before {
+    position: absolute;
+    content: attr(data-tooltip);
+    opacity: 0;
+}
+
+[data-tooltip]:hover::before {
+    opacity: 1;
+    background-color: black;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 1rem;
+    color: white;
+}
+
+table {
+    border-spacing: 5px;
+    border: solid 1px darkgray;
+    border-radius: 12px;
+    margin: 20px 0;
+}
+
+td {
+    padding: 5px;
+    min-width: 4.2rem;
+}
+
+fieldset {
+    display: flex;
+    gap: 1rem;
+    padding: 0 8px 8px 8px;
+    border-radius: 8px;
+    border: 1px solid #cccccc;
 }

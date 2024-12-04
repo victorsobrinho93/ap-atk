@@ -13,101 +13,120 @@
     </head>
     <body>
         <main id="container">
-            <div id="select-character">
-                <form>
-                    <label for="character">Character</label>
-                    <select name="character" id="character" class="data-input">
-                        <option value="">--</option>
-                        <option value="jane">Jane (Passion State)</option>
-                        <option value="burnice">Burnice</option>
-                        <option value="grace">Grace</option>
-                        <option value="yanagi">Yanagi</option>
-                        <option value="piper">Piper</option>
-                    </select>
-                </form>
-            </div>
-            <div id="select-engine">
-                <form id="engine-form">
-                    <label for="w-engine">W-engine</label>
-                    <select name="w-engine" id="w-engine" class="data-input">
-                        <option value="">--</option>
-                        <option value="stinger">Sharpened Stinger</option>
-                        <option value="roaring">Roaring Ride</option>
-                        <option value="rainforest">Rainforest Gourmet</option>
-                        <option value="lipgloss">Electro Lip-Gloss</option>
-                        <option value="gemini">Weeping Gemini</option>
-                        <option value="fusion">Fusion Compiler</option>
-                        <option value="timeweaver">Timeweaver</option>
-                        <option value="flamemaker">Flamemaker Shaker</option>
-                    </select>
-                </form>
-            </div>
-            <div>
-                <label for="attack">ATK</label>
-                <input
-                    type="text"
-                    name="attack"
-                    id="attack"
-                    class="data-input" />
-            </div>
-            <div>
-                <label for="anomaly">Anomaly Proficiency</label>
-                <input
-                    type="text"
-                    name="anomaly"
-                    id="anomaly"
-                    class="data-input" />
-            </div>
-            <div id="select-buffs">
-                <form action="" id="buffs">
-                    <div>
-                        <input
-                            type="checkbox"
-                            name="seth"
-                            id="seth"
-                            class="data-input" />
-                        <label for="seth">Seth</label>
-                    </div>
-                    <div>
-                        <input
-                            type="checkbox"
-                            name="lucy"
-                            id="lucy"
-                            class="data-input" />
-                        <label for="lucy">Lucy</label>
-                    </div>
-                    <div>
-                        <input
-                            type="checkbox"
-                            name="caesar"
-                            id="caesar"
-                            class="data-input" />
-                        <label for="caesar">Caesar</label>
-                    </div>
-                    <div>
-                        <input
-                            type="checkbox"
-                            name="soukaku"
-                            id="soukaku"
-                            class="data-input" />
-                        <label for="soukaku">Soukaku</label>
-                    </div>
-                    <div>
-                        <input
-                            type="checkbox"
-                            name="vortex"
-                            id="vortex"
-                            class="data-input" />
-                        <label for="vortex">Soukaku (Vortex)</label>
-                    </div>
-                </form>
-            </div>
+            <section id="base-calculation">
+                <div id="select-character">
+                    <form>
+                        <label for="character">Character</label>
+                        <select
+                            name="character"
+                            id="character"
+                            class="data-input">
+                            <option value="">--</option>
+                            <option value="jane">Jane (Passion State)</option>
+                            <option value="burnice">Burnice</option>
+                            <option value="grace">Grace</option>
+                            <option value="yanagi">Yanagi</option>
+                            <option value="piper">Piper</option>
+                        </select>
+                    </form>
+                </div>
+                <div id="select-engine">
+                    <form id="engine-form">
+                        <label for="w-engine">W-engine</label>
+                        <select
+                            name="w-engine"
+                            id="w-engine"
+                            class="data-input">
+                            <option value="">--</option>
+                            <option value="stinger">Sharpened Stinger</option>
+                            <option value="roaring">Roaring Ride</option>
+                            <option value="rainforest">
+                                Rainforest Gourmet
+                            </option>
+                            <option value="lipgloss">Electro Lip-Gloss</option>
+                            <option value="gemini">Weeping Gemini</option>
+                            <option value="fusion">Fusion Compiler</option>
+                            <option value="timeweaver">Timeweaver</option>
+                            <option value="flamemaker">
+                                Flamemaker Shaker
+                            </option>
+                        </select>
+                    </form>
+                </div>
+                <div>
+                    <label for="attack">ATK</label>
+                    <input
+                        type="text"
+                        name="attack"
+                        id="attack"
+                        class="data-input" />
+                </div>
+                <div>
+                    <label for="anomaly">Anomaly Proficiency</label>
+                    <input
+                        type="text"
+                        name="anomaly"
+                        id="anomaly"
+                        class="data-input" />
+                </div>
+                <div id="select-buffs">
+                    <form action="" id="buffs">
+                        <fieldset id="teammates">
+                            <legend>Team Buffs</legend>
+                            <div>
+                                <input
+                                    type="checkbox"
+                                    name="seth"
+                                    id="seth"
+                                    class="data-input" />
+                                <label for="seth">Seth</label>
+                            </div>
+                            <div>
+                                <input
+                                    type="checkbox"
+                                    name="lucy"
+                                    id="lucy"
+                                    class="data-input" />
+                                <label for="lucy">Lucy</label>
+                            </div>
+                            <div>
+                                <input
+                                    type="checkbox"
+                                    name="caesar"
+                                    id="caesar"
+                                    class="data-input" />
+                                <label for="caesar">Caesar</label>
+                            </div>
+                            <div>
+                                <input
+                                    type="checkbox"
+                                    name="soukaku"
+                                    id="soukaku"
+                                    class="data-input" />
+                                <label for="soukaku">Soukaku</label>
+                            </div>
+                            <div>
+                                <input
+                                    type="checkbox"
+                                    name="vortex"
+                                    id="vortex"
+                                    class="data-input" />
+                                <label for="vortex">Soukaku (Vortex)</label>
+                            </div>
+                        </fieldset>
+                    </form>
+                </div>
 
-            <div id="results"></div>
-            <div>
-                <button type="button" id="calc-btn" disabled>Calculate</button>
-                <button type="button" id="reset-btn">Reset</button>
-            </div>
+                <div id="results"></div>
+                <div>
+                    <button type="button" id="calc-btn" disabled>
+                        Calculate
+                    </button>
+                    <button type="button" id="reset-btn">Reset</button>
+                </div>
+                <p id="disclaimer"></p>
+            </section>
+            <section id="wip"></section>
         </main>
 
         <script src="data.js"></script>

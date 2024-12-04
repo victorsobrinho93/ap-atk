@@ -1,32 +1,3 @@
-const state = {
-    baseCharacterAttack: 0,
-    baseEngineAttack: 0,
-    baseAttack: 0,
-    attackInput: 0,
-    attackIncreasePercentage: 0,
-    anomalyProficiency: 0,
-    anomalyIncrease: 0,
-    attackIncrease: 0,
-    attackBuffIncrease: 0,
-    anomalyBuffIncrease: 0,
-    engineAttackIncrease: 0,
-    engineAnomalyIncrease: 0,
-    resetBuffs: function () {
-        this.attackBuffIncrease = 0;
-        this.anomalyBuffIncrease = 0;
-    },
-    calculate: function () {
-        const cAtk = characterData[document.getElementById("character").value];
-        const eAtk =
-            engineData[document.getElementById("w-engine").value]["baseAtk"];
-        this.baseAttack = cAtk + eAtk;
-        this.attackIncreasePercentage = +(
-            100 *
-            (this.attackInput / this.baseAttack - 1)
-        ).toFixed(3);
-    },
-};
-
 const character = document.getElementById("character");
 
 character.addEventListener("change", () => {
@@ -90,6 +61,8 @@ const engineSettings = {
             rSelect.appendChild(rOption);
         }
 
+        //todo: add uptime count
+
         const sLabel = document.createElement("label");
         sLabel.textContent = "Stacks";
         sLabel.htmlFor = "engine-s";
@@ -100,22 +73,61 @@ const engineSettings = {
         selectStacks.name = "engine-s";
         selectStacks.classList.add("es-component");
 
-        for (let i = 0; i <= engineData[selectedEngine].stacks; i++) {
+        const maximumStacks = engineData[selectedEngine].stacks;
+
+        for (let i = 0; i <= maximumStacks; i++) {
             const stacks = document.createElement("option");
-            stacks.value = i;
-            stacks.textContent = i;
+            if (maximumStacks === 1) {
+                stacks.value = i;
+                stacks.textContent = i === 0 ? "Inactive" : "Active";
+            } else {
+                stacks.value = i;
+                stacks.textContent = i;
+                if (i === Math.ceil(maximumStacks / 2))
+                    stacks.setAttribute("selected", "selected");
+            }
             selectStacks.appendChild(stacks);
+        }
+
+        const uLabel = document.createElement("label");
+        uLabel.textContent = "Uptime";
+        uLabel.htmlFor = "engine-upt";
+        uLabel.classList.add("es-component");
+
+        const setUptime = document.createElement("select");
+        setUptime.id = "engine-upt";
+        setUptime.name = "engine-upt";
+        setUptime.classList.add("es-component");
+        setUptime.addEventListener("change", () => {
+            state.enginePassiveBonusUptime = +setUptime.value / 100;
+        });
+
+        for (let i = 0; i <= 100; i += 25) {
+            const uptime = document.createElement("option");
+            uptime.value = i / 100;
+            uptime.textContent = `${i}%`;
+            if (i === 50) {
+                uptime.setAttribute("selected", "selected");
+            }
+            setUptime.appendChild(uptime);
         }
 
         engineForm.appendChild(rLabel);
         engineForm.appendChild(rSelect);
-        engineForm.appendChild(sLabel);
-        engineForm.appendChild(selectStacks);
+        if (maximumStacks > 1) {
+            engineForm.appendChild(sLabel);
+            engineForm.appendChild(selectStacks);
+        } else {
+            engineForm.appendChild(uLabel);
+            engineForm.appendChild(setUptime);
+        }
 
         document.querySelectorAll(".es-component").forEach((e) => {
             e.addEventListener("change", () => {
                 const rank = document.getElementById("engine-r");
-                const stacks = document.getElementById("engine-s");
+                const stacks =
+                    document.getElementById("engine-s") ??
+                    document.getElementById("engine-upt");
                 const data = engineData[selectedEngine];
                 if (selectedEngine === "fusion") {
                     state.engineAttackIncrease =
@@ -129,12 +141,15 @@ const engineSettings = {
                 state.engineAnomalyIncrease = data.anomalyValuePerStack
                     ? data.anomalyValuePerStack[rank.value] * stacks.value
                     : 0;
+                console.log(stacks.value);
                 // calculateStatValue();
             });
         });
     },
     refresh() {
-        const settingsElements = document.querySelectorAll(".es-component");
+        const settingsElements = document.querySelectorAll(
+            ".es-component, .es-component-uptime"
+        );
         settingsElements.forEach((e) => e.remove());
     },
 };
@@ -169,42 +184,113 @@ setBuffs.querySelectorAll('input[type="checkbox"]').forEach((e) => {
 function calculateStatValue() {
     state.calculate();
     const results = document.getElementById("results");
-    let totalAttack =
-        state.baseAttack *
-            (1 +
-                (state.attackIncreasePercentage + state.engineAttackIncrease) /
-                    100) +
-        state.attackBuffIncrease;
-    let plusThree =
-        state.baseAttack *
-            (1 +
-                (state.attackIncreasePercentage +
-                    3 +
-                    state.engineAttackIncrease) /
-                    100) +
-        state.attackBuffIncrease;
-    if (character.value === "jane") {
-        totalAttack += 600;
-        plusThree += 600;
-    }
-    const attackIncrease = (100 - (totalAttack / plusThree) * 100).toFixed(3);
-    //* Anomaly
-    const totalAnomaly =
-        state.anomalyProficiency +
-        state.anomalyBuffIncrease +
-        state.engineAnomalyIncrease;
-    const apIncrease = ((9 / totalAnomaly) * 100).toFixed(2);
+    const { type, mod } = anomalyElement[character.value];
 
     results.innerHTML = `
-                    <h2>3% ATK: +${
+
+        <h2 style="color:${
+            type === "Shock" ? "blue" : type === "Burn" ? "red" : "goldenrod"
+        }"><span id="dmg-calc">Base</span> ${type} DMG: ${(
+        (mod * calculateTotalAttack(0) * calculateTotalAnomaly()) /
+        100
+    ).toFixed(0)}</h2>
+
+    <table>
+        <tr>
+            <th colspan="6">Anomaly DMG increase</th>
+        </tr>
+        <tr>
+            <th></th>
+            <th>-</th>
+            <th>+1</th>
+            <th>+2</th>
+            <th>+3</th>
+            <th>+4</th>
+        </tr>
+        <tr>
+            <th>ATK</th>
+            <td id="atk-cell-0">${calculateAttackIncrease(1)}%</td>
+            <td id="atk-cell-1">${calculateAttackIncrease(2)}%</td>
+            <td id="atk-cell-2">${calculateAttackIncrease(3)}%</td>
+            <td id="atk-cell-3">${calculateAttackIncrease(4)}%</td>
+            <td id="atk-cell-4">${calculateAttackIncrease(5)}%</td>
+        </tr>
+        <tr>
+            <th>AP</th>
+            <td id="ap-cell-0">${calculateAnomalyIncrease(1)}%</td>
+            <td id="ap-cell-1">${calculateAnomalyIncrease(2)}%</td>
+            <td id="ap-cell-2">${calculateAnomalyIncrease(3)}%</td>
+            <td id="ap-cell-3">${calculateAnomalyIncrease(4)}%</td>
+            <td id="ap-cell-4">${calculateAnomalyIncrease(5)}%</td>
+        </tr>
+    </table>
+    `;
+
+    document.getElementById(
+        "disclaimer"
+    ).innerHTML = `<p>* Base: Does not account for other multipliers, including those from W-Engine passives. ATK and AP only.</p>`;
+}
+
+function calculateTotalAttack(substatValue) {
+    let attack =
+        state.baseAttack *
+            (1 + (state.attackIncreasePercentage + 3 * substatValue) / 100) *
+            (1 + state.engineAttackIncrease / 100) +
+        state.attackBuffIncrease;
+    if (character.value === "jane") {
+        const ap = calculateTotalAnomaly();
+        if (ap > 120) {
+            let increase = (ap - 120) * 2;
+            increase > 600 ? (attack += 600) : (attack += increase);
+        }
+    }
+    console.log(attack);
+    return attack;
+}
+
+function calculateAttackIncrease(substatValue) {
+    return (
+        100 -
+        (calculateTotalAttack(0) / calculateTotalAttack(substatValue)) * 100
+    ).toFixed(2);
+}
+
+function calculateTotalAnomaly() {
+    return (
+        state.anomalyProficiency +
+        state.anomalyBuffIncrease +
+        state.engineAnomalyIncrease
+    );
+}
+
+function calculateAnomalyIncrease(substatValue) {
+    return (((9 * substatValue) / calculateTotalAnomaly()) * 100).toFixed(2);
+}
+
+//     let totalAttack =
+//         state.baseAttack *
+//             (1 + state.attackIncreasePercentage / 100) *
+//             (1 + state.engineAttackIncrease / 100) +
+//         state.attackBuffIncrease;
+//     let plusThree =
+//         state.baseAttack *
+//             (1 + (state.attackIncreasePercentage + 3) / 100) *
+//             (1 + state.engineAttackIncrease / 100) +
+//         state.attackBuffIncrease;
+//     if (character.value === "jane") {
+//         totalAttack += 600;
+//         plusThree += 600;
+//     }
+//     const attackIncrease = (100 - (totalAttack / plusThree) * 100).toFixed(2);
+// }
+
+/* <h2>3% ATK: +${
                         attackIncrease > 3.0 ? "3" : attackIncrease
                     }% Anomaly DMG
                     <h2>9 AP: +${
                         apIncrease > 900 ? "?" : apIncrease
                     }% Anomaly DMG
-
-    `;
-}
+                    */
 
 const calculateButton = document.getElementById("calc-btn");
 
@@ -223,3 +309,7 @@ window.onload = () => {
 document
     .getElementById("reset-btn")
     .addEventListener("click", () => window.location.reload());
+
+function baseAnomalyDamage() {
+    const selectedCharacter = character.value;
+}
