@@ -1,9 +1,24 @@
 const characterData = {
-    jane: 880,
-    burnice: 863,
-    yanagi: 872,
-    grace: 825,
-    piper: 758,
+    jane: {
+        baseAttack: 880,
+        element: "physical",
+    },
+    burnice: {
+        baseAttack: 863,
+        element: "fire",
+    },
+    yanagi: {
+        baseAttack: 872,
+        element: "electric",
+    },
+    grace: {
+        baseAttack: 825,
+        element: "electric",
+    },
+    piper: {
+        baseAttack: 758,
+        element: "physical",
+    },
 };
 
 const engineData = {
@@ -35,7 +50,7 @@ const engineData = {
         baseAtk: 714,
         stacks: 1,
         atkValuePerStack: null,
-        anomalyValuePerStack: [0, 75 / 85 / 95 / 105 / 115],
+        anomalyValuePerStack: [0, 75, 85, 95, 105, 115],
     },
     stinger: {
         baseAtk: 713,
@@ -72,7 +87,7 @@ const buffs = {
     },
     soukaku: {
         anomaly: 0,
-        attack: 500,
+        attack: 1000,
     },
     vortex: {
         anomaly: 0,
@@ -84,30 +99,26 @@ const buffs = {
     },
 };
 
-const anomalyElement = {
-    jane: {
-        type: "Assault",
-        mod: 7.13,
+const anomaly = {
+    physical: {
+        proc: "Assault",
+        multiplier: 7.13,
+        color: "goldenrod",
     },
-    piper: {
-        type: "Assault",
-        mod: 7.13,
+    electric: {
+        proc: "Shock",
+        multiplier: 1.25,
+        color: "#305cde",
     },
-    burnice: {
-        type: "Burn",
-        mod: 0.5,
-    },
-    grace: {
-        type: "Shock",
-        mod: 1.25,
-    },
-    yanagi: {
-        type: "Shock",
-        mod: 1.25,
+    fire: {
+        proc: "Burn",
+        multiplier: 0.5,
+        color: "red",
     },
 };
 
 const state = {
+    selectedCharacter: "",
     baseCharacterAttack: 0,
     baseEngineAttack: 0,
     baseAttack: 0,
@@ -118,17 +129,24 @@ const state = {
     attackIncrease: 0,
     attackBuffIncrease: 0,
     anomalyBuffIncrease: 0,
+    selectedEngine: "",
+    engineSelectedRating: 1,
+    enginePassiveMultiplier: 0,
     engineAttackIncrease: 0,
     engineAnomalyIncrease: 0,
-    enginePassiveBonusUptime: 0,
-    resetBuffs: function () {
+    calculateBuffs: function () {
         this.attackBuffIncrease = 0;
         this.anomalyBuffIncrease = 0;
+        document.querySelectorAll(".team-btn").forEach((c) => {
+            if (c.classList.contains("selected")) {
+                this.attackBuffIncrease += buffs[c.id].attack;
+                this.anomalyBuffIncrease += buffs[c.id].anomaly;
+            }
+        });
     },
     calculate: function () {
-        const cAtk = characterData[document.getElementById("character").value];
-        const eAtk =
-            engineData[document.getElementById("w-engine").value]["baseAtk"];
+        const cAtk = characterData[this.selectedCharacter].baseAttack;
+        const { baseAtk: eAtk } = engineData[this.selectedEngine];
         this.baseAttack = cAtk + eAtk;
         this.attackIncreasePercentage = +(
             100 *

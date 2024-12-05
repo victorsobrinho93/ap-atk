@@ -9,27 +9,45 @@
         <link
             href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap"
             rel="stylesheet" />
-        <title>Should You increase ATK or AP?</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.1/css/all.min.css" />
+
+        <title>ZZZ ATK:AP Calculator</title>
     </head>
     <body>
         <main id="container">
             <section id="base-calculation">
-                <div id="select-character">
-                    <form>
-                        <label for="character">Character</label>
-                        <select
-                            name="character"
-                            id="character"
-                            class="data-input">
-                            <option value="">--</option>
-                            <option value="jane">Jane (Passion State)</option>
-                            <option value="burnice">Burnice</option>
-                            <option value="grace">Grace</option>
-                            <option value="yanagi">Yanagi</option>
-                            <option value="piper">Piper</option>
-                        </select>
-                    </form>
-                </div>
+                <fieldset>
+                    <legend>Character</legend>
+                    <button type="button" class="character-btn" id="jane">
+                        <img
+                            src="images/thumb_jane_doe.png"
+                            title="Jane Doe (Passion State)"
+                            class="character-img s-rank" />
+                    </button>
+                    <button type="button" class="character-btn" id="yanagi">
+                        <img
+                            src="images/thumb_yanagi.png"
+                            class="character-img s-rank" />
+                    </button>
+                    <button type="button" class="character-btn" id="burnice">
+                        <img
+                            src="images/thumb_burnice.png"
+                            class="character-img s-rank" />
+                    </button>
+                    <button type="button" class="character-btn" id="grace">
+                        <img
+                            src="images/thumb_grace.png"
+                            class="character-img s-rank" />
+                    </button>
+                    <button type="button" class="character-btn" id="piper">
+                        <img
+                            src="images/thumb_piper.png"
+                            class="character-img a-rank" />
+                    </button>
+                </fieldset>
+
                 <div id="select-engine">
                     <form id="engine-form">
                         <label for="w-engine">W-engine</label>
@@ -53,80 +71,61 @@
                         </select>
                     </form>
                 </div>
-                <div>
-                    <label for="attack">ATK</label>
+                <div class="input-fieldset">
+                    <label for="attack">Attack </label>
                     <input
                         type="text"
                         name="attack"
                         id="attack"
-                        class="data-input" />
-                </div>
-                <div>
+                        class="data-input"
+                        placeholder="0" />
                     <label for="anomaly">Anomaly Proficiency</label>
                     <input
                         type="text"
                         name="anomaly"
                         id="anomaly"
-                        class="data-input" />
-                </div>
-                <div id="select-buffs">
-                    <form action="" id="buffs">
-                        <fieldset id="teammates">
-                            <legend>Team Buffs</legend>
-                            <div>
-                                <input
-                                    type="checkbox"
-                                    name="seth"
-                                    id="seth"
-                                    class="data-input" />
-                                <label for="seth">Seth</label>
-                            </div>
-                            <div>
-                                <input
-                                    type="checkbox"
-                                    name="lucy"
-                                    id="lucy"
-                                    class="data-input" />
-                                <label for="lucy">Lucy</label>
-                            </div>
-                            <div>
-                                <input
-                                    type="checkbox"
-                                    name="caesar"
-                                    id="caesar"
-                                    class="data-input" />
-                                <label for="caesar">Caesar</label>
-                            </div>
-                            <div>
-                                <input
-                                    type="checkbox"
-                                    name="soukaku"
-                                    id="soukaku"
-                                    class="data-input" />
-                                <label for="soukaku">Soukaku</label>
-                            </div>
-                            <div>
-                                <input
-                                    type="checkbox"
-                                    name="vortex"
-                                    id="vortex"
-                                    class="data-input" />
-                                <label for="vortex">Soukaku (Vortex)</label>
-                            </div>
-                        </fieldset>
-                    </form>
+                        class="data-input"
+                        placeholder="0" />
                 </div>
 
-                <div id="results"></div>
-                <div>
-                    <button type="button" id="calc-btn" disabled>
-                        Calculate
+                <fieldset>
+                    <legend>Team Buffs</legend>
+                    <button type="button" class="team-btn" id="soukaku">
+                        <img
+                            src="images/thumb_soukaku.png"
+                            class="character-img a-rank" />
                     </button>
-                    <button type="button" id="reset-btn">Reset</button>
+                    <button type="button" class="team-btn" id="lucy">
+                        <img
+                            src="images/thumb_lucy.png"
+                            class="character-img a-rank" />
+                    </button>
+                    <button type="button" class="team-btn" id="seth">
+                        <img
+                            src="images/thumb_seth.png"
+                            class="character-img a-rank" />
+                    </button>
+                    <button type="button" class="team-btn" id="caesar">
+                        <img
+                            src="images/thumb_caesar.png"
+                            class="character-img s-rank" />
+                    </button>
+                </fieldset>
+
+                <div>
+                    <h3 id="stat-count"></h3>
+                    <h2 id="result"></h2>
+                </div>
+
+                <div>
+                    <!-- <button type="button" id="calc-btn" disabled>
+                        CALCULATE
+                    </button> -->
+                    <button type="button" id="reset-btn">RESET</button>
                 </div>
                 <p id="disclaimer"></p>
             </section>
-            <section id="wip"></section>
+            <section id="substat-table"></section>
         </main>
 
         <script src="data.js"></script>

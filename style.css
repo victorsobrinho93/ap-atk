@@ -1,26 +1,56 @@
+@font-face {
+    font-family: "zzz";
+    src: url("assets/font/font.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
     font-family: "Poppins", sans-serif;
+    font-weight: 500;
+    font-size: 1.15rem;
+    color: #dddddd;
 }
 
 body {
-    background-color: #eeeeee;
+    background-color: #000000;
 }
 
 #container {
     display: flex;
     gap: 3rem;
+    width: 100vw;
 }
 
 #base-calculation {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 1rem;
+    gap: 1.5rem;
     padding: 2rem;
-    flex-basis: 50%;
+    /* background-color: #111111; */
+    background: linear-gradient(#111111, #131313);
+    border-radius: 1rem;
+    /* align-items: center; */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    min-width: 35%;
+    flex-wrap: wrap;
+}
+
+#substat-table table {
+    background: linear-gradient(#111111, #222222);
+    border: none;
+    border-spacing: 5px;
+    /* border: solid 1px darkgray; */
+    border-radius: 12px;
+    margin: 20px 20px;
+    padding: 0.5rem;
 }
 
 #buffs {
@@ -40,39 +70,6 @@ select {
     padding: 3px;
 }
 
-button {
-    padding: 8px;
-    font-weight: 600;
-    color: white;
-    background-color: black;
-}
-
-button:disabled {
-    background-color: grey;
-}
-
-[data-tooltip]::before {
-    position: absolute;
-    content: attr(data-tooltip);
-    opacity: 0;
-}
-
-[data-tooltip]:hover::before {
-    opacity: 1;
-    background-color: black;
-    padding: 8px;
-    border-radius: 8px;
-    font-size: 1rem;
-    color: white;
-}
-
-table {
-    border-spacing: 5px;
-    border: solid 1px darkgray;
-    border-radius: 12px;
-    margin: 20px 0;
-}
-
 td {
     padding: 5px;
     min-width: 4.2rem;
@@ -80,8 +77,87 @@ td {
 
 fieldset {
     display: flex;
+    width: 0px;
     gap: 1rem;
-    padding: 0 8px 8px 8px;
+    padding: 0.5rem;
     border-radius: 8px;
-    border: 1px solid #cccccc;
+    border: 1px solid #575757;
+    border: none;
+}
+
+#soukaku-vortex {
+    color: #04d9ff;
+    letter-spacing: 4px;
+}
+
+.character-img {
+    width: 5rem;
+    border-radius: 50%;
+}
+
+.a-rank {
+    background-color: #8055c3;
+}
+
+.s-rank {
+    background-color: #c49b66;
+}
+
+.character-btn,
+.team-btn {
+    background-color: transparent;
+    border: none;
+    padding: 0;
+    filter: grayscale();
+}
+
+.selected {
+    filter: none !important;
+}
+
+input {
+    width: 5rem;
+    text-align: center;
+    padding: 5px;
+    background-color: #232323;
+    border: 2px solid #343434;
+    border-radius: 8px;
+}
+
+select {
+    background-color: #232323;
+    border: 2px solid #343434;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+button {
+    padding: 12px 1.5rem;
+    font-weight: 600;
+    color: black;
+    border: none;
+    border-radius: 2rem;
+}
+
+#reset-btn {
+    background-color: #575757;
+}
+
+#calc-btn:disabled {
+    filter: grayscale();
+}
+
+#calc-btn {
+    background-color: yellow;
+}
+
+.input-fieldset {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 700;
 }

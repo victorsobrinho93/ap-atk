@@ -1,155 +1,157 @@
-const character = document.getElementById("character");
+// const calculateButton = document.getElementById("calc-btn");
 
-character.addEventListener("change", () => {
-    state.baseCharacterAttack = characterData[character.value];
-    enableCalcButton();
-});
+// calculateButton.addEventListener("click", () => calculateAnomalyDamage());
+
+function validateDataInput() {
+    if (
+        [
+            state.selectedCharacter,
+            state.selectedEngine,
+            attackInput.value,
+            anomalyInput.value,
+        ].every((e) => e !== "")
+    ) {
+        calculateAnomalyDamage();
+    }
+}
+
+const results = document.getElementById("results");
+const engineForm = document.getElementById("engine-form");
 
 const engine = document.getElementById("w-engine");
 
 engine.addEventListener("change", () => {
     engineSettings.refresh();
-    enableCalcButton();
-    if (engine.value !== "") {
+    state.selectedEngine = engine.value;
+    engineSettings.render();
+    if (engine.value) {
         state.baseEngineAttack = engineData[engine.value].baseAtk;
-        engineSettings.render();
+        calculateEnginePassiveIncrease();
     }
+    validateDataInput();
 });
 
-function enableCalcButton() {
-    if (character.value === "" || engine.value === "") {
-        calculateButton.disabled = true;
-    } else {
-        calculateButton.disabled = false;
-    }
+function createElementSet(textContent, htmlFor) {
+    const labelElement = document.createElement("label");
+    labelElement.textContent = textContent;
+    labelElement.htmlFor = htmlFor;
+    labelElement.classList.add("es-component");
+
+    const selectElement = document.createElement("select");
+    selectElement.id = htmlFor;
+    selectElement.name = htmlFor;
+    selectElement.classList.add("es-component");
+
+    return { label: labelElement, select: selectElement };
 }
 
-const engineR = document.getElementById("engine-r");
-const engineStacks = document.getElementById("engine-stacks");
-const results = document.getElementById("results");
+function renderEngineRating() {
+    const { label, select } = createElementSet("R", "engine-r");
 
-const engineForm = document.getElementById("engine-form");
+    for (let i = 1; i <= 5; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = i;
+        select.appendChild(option);
+    }
 
-engine.addEventListener("change", () => {});
+    state.engineSelectedRating = 1;
+
+    select.addEventListener("change", () => {
+        state.engineSelectedRating = +select.value;
+    });
+
+    engineForm.appendChild(label);
+    engineForm.appendChild(select);
+}
+
+function renderEngineStacks(maximumStacks) {
+    const { label, select } = createElementSet("Stacks", "engine-s");
+
+    for (let i = 0; i <= maximumStacks; i++) {
+        const option = document.createElement("option");
+        option.value = i;
+        option.textContent = i;
+        if (i === Math.ceil(maximumStacks / 2)) {
+            option.setAttribute("selected", "selected");
+            state.enginePassiveMultiplier = i;
+        }
+        select.appendChild(option);
+    }
+
+    select.addEventListener("change", () => {
+        state.enginePassiveMultiplier = +select.value;
+    });
+
+    engineForm.appendChild(label);
+    engineForm.appendChild(select);
+}
+
+function renderPassiveUptime() {
+    const { label, select } = createElementSet("Uptime", "engine-s");
+    for (let i = 0; i <= 100; i += 25) {
+        const option = document.createElement("option");
+        option.value = i / 100;
+        option.textContent = `${i}%`;
+        if (i === 50) {
+            option.setAttribute("selected", "selected");
+            state.enginePassiveMultiplier = i / 100;
+        }
+        select.appendChild(option);
+    }
+
+    select.addEventListener("change", () => {
+        state.enginePassiveMultiplier = +select.value;
+    });
+
+    engineForm.appendChild(label);
+    engineForm.appendChild(select);
+}
+
+//* Check
+function calculateEnginePassiveIncrease() {
+    const { atkValuePerStack: atk, anomalyValuePerStack: anomaly } =
+        engineData[state.selectedEngine];
+
+    const {
+        selectedEngine: engine,
+        engineSelectedRating: rating,
+        enginePassiveMultiplier: multiplier,
+    } = state;
+
+    state.engineAttackIncrease =
+        engine === "fusion" ? atk[rating] : atk ? atk[rating] * multiplier : 0;
+    state.engineAnomalyIncrease = anomaly ? anomaly[rating] * multiplier : 0;
+}
 
 const engineSettings = {
     render() {
-        const selectedEngine = engine.value;
         if (
-            engineData[selectedEngine].atkValuePerStack === null &&
-            engineData[selectedEngine].anomalyValuePerStack === null
+            !state.selectedEngine ||
+            engineData[state.selectedEngine].stacks === null
         ) {
             state.engineAttackIncrease = 0;
             state.engineAnomalyIncrease = 0;
             return false;
         }
 
-        const rLabel = document.createElement("label");
-        rLabel.textContent = "R";
-        rLabel.htmlFor = "engine-r";
-        rLabel.classList.add("es-component");
-
-        const rSelect = document.createElement("select");
-        rSelect.id = "engine-r";
-        rSelect.name = "engine-r";
-        rSelect.classList.add("es-component");
-
-        for (let i = 1; i <= 5; i++) {
-            const rOption = document.createElement("option");
-            rOption.value = i;
-            rOption.textContent = i;
-            rSelect.appendChild(rOption);
-        }
-
-        //todo: add uptime count
-
-        const sLabel = document.createElement("label");
-        sLabel.textContent = "Stacks";
-        sLabel.htmlFor = "engine-s";
-        sLabel.classList.add("es-component");
-
-        const selectStacks = document.createElement("select");
-        selectStacks.id = "engine-s";
-        selectStacks.name = "engine-s";
-        selectStacks.classList.add("es-component");
-
-        const maximumStacks = engineData[selectedEngine].stacks;
-
-        for (let i = 0; i <= maximumStacks; i++) {
-            const stacks = document.createElement("option");
-            if (maximumStacks === 1) {
-                stacks.value = i;
-                stacks.textContent = i === 0 ? "Inactive" : "Active";
-            } else {
-                stacks.value = i;
-                stacks.textContent = i;
-                if (i === Math.ceil(maximumStacks / 2))
-                    stacks.setAttribute("selected", "selected");
-            }
-            selectStacks.appendChild(stacks);
-        }
-
-        const uLabel = document.createElement("label");
-        uLabel.textContent = "Uptime";
-        uLabel.htmlFor = "engine-upt";
-        uLabel.classList.add("es-component");
-
-        const setUptime = document.createElement("select");
-        setUptime.id = "engine-upt";
-        setUptime.name = "engine-upt";
-        setUptime.classList.add("es-component");
-        setUptime.addEventListener("change", () => {
-            state.enginePassiveBonusUptime = +setUptime.value / 100;
-        });
-
-        for (let i = 0; i <= 100; i += 25) {
-            const uptime = document.createElement("option");
-            uptime.value = i / 100;
-            uptime.textContent = `${i}%`;
-            if (i === 50) {
-                uptime.setAttribute("selected", "selected");
-            }
-            setUptime.appendChild(uptime);
-        }
-
-        engineForm.appendChild(rLabel);
-        engineForm.appendChild(rSelect);
-        if (maximumStacks > 1) {
-            engineForm.appendChild(sLabel);
-            engineForm.appendChild(selectStacks);
+        const engineStacks = engineData[state.selectedEngine].stacks;
+        renderEngineRating();
+        if (engineStacks === 1) {
+            renderPassiveUptime();
         } else {
-            engineForm.appendChild(uLabel);
-            engineForm.appendChild(setUptime);
+            renderEngineStacks(engineStacks);
         }
 
-        document.querySelectorAll(".es-component").forEach((e) => {
-            e.addEventListener("change", () => {
-                const rank = document.getElementById("engine-r");
-                const stacks =
-                    document.getElementById("engine-s") ??
-                    document.getElementById("engine-upt");
-                const data = engineData[selectedEngine];
-                if (selectedEngine === "fusion") {
-                    state.engineAttackIncrease =
-                        data.atkValuePerStack[rank.value];
-                } else {
-                    state.engineAttackIncrease = data.atkValuePerStack
-                        ? data.atkValuePerStack[rank.value] * stacks.value
-                        : 0;
-                }
-
-                state.engineAnomalyIncrease = data.anomalyValuePerStack
-                    ? data.anomalyValuePerStack[rank.value] * stacks.value
-                    : 0;
-                console.log(stacks.value);
-                // calculateStatValue();
-            });
+        document.querySelectorAll(".es-component").forEach((element) => {
+            element.addEventListener("change", () =>
+                // calculateEnginePassiveIncrease()
+                calculateAnomalyDamage()
+            );
         });
     },
     refresh() {
-        const settingsElements = document.querySelectorAll(
-            ".es-component, .es-component-uptime"
-        );
+        const settingsElements = document.querySelectorAll(".es-component");
         settingsElements.forEach((e) => e.remove());
     },
 };
@@ -157,102 +159,113 @@ const engineSettings = {
 const attackInput = document.getElementById("attack");
 attackInput.addEventListener("input", () => {
     state.attackInput = +attackInput.value;
-    // calculateStatValue();
+    state.calculate();
 });
 
 const anomalyInput = document.getElementById("anomaly");
 anomalyInput.addEventListener("input", () => {
     state.anomalyProficiency = +anomalyInput.value;
-    // calculateStatValue();
 });
 
-const setBuffs = document.getElementById("buffs");
+document
+    .querySelectorAll(".data-input")
+    .forEach((e) => e.addEventListener("input", () => validateDataInput()));
 
-setBuffs.querySelectorAll('input[type="checkbox"]').forEach((e) => {
-    e.addEventListener("change", () => {
-        state.resetBuffs();
-        setBuffs
-            .querySelectorAll('input[type="checkbox"]:checked')
-            .forEach((c) => {
-                state.attackBuffIncrease += buffs[c.id].attack;
-                state.anomalyBuffIncrease += buffs[c.id].anomaly;
-            });
-        // calculateStatValue();
-    });
-});
+//todo: This whole function needs a rework. It is not working right...
+function calculateAnomalyDamage() {
+    if (!(+attackInput.value >= state.baseAttack && +anomalyInput.value >= 118))
+        return false;
 
-function calculateStatValue() {
-    state.calculate();
-    const results = document.getElementById("results");
-    const { type, mod } = anomalyElement[character.value];
+    const result = document.getElementById("result");
+    const stats = document.getElementById("stat-count");
+    let _attack = calculateTotalAttack(0);
+    let _anomaly = calculateTotalAnomaly();
 
-    results.innerHTML = `
+    stats.innerHTML = `<b>ATK</b>: ${_attack.toFixed(
+        0
+    )} <b>AP</b>: ${_anomaly}`;
 
-        <h2 style="color:${
-            type === "Shock" ? "blue" : type === "Burn" ? "red" : "goldenrod"
-        }"><span id="dmg-calc">Base</span> ${type} DMG: ${(
-        (mod * calculateTotalAttack(0) * calculateTotalAnomaly()) /
-        100
-    ).toFixed(0)}</h2>
+    const { proc, multiplier, color } =
+        anomaly[characterData[state.selectedCharacter].element];
+    result.setAttribute("style", `color:${color}`);
+    result.textContent = `Base ${proc} ${
+        proc === "Assault" ? "DMG" : "DPS"
+    }: ${((multiplier * _attack * _anomaly) / 100).toFixed(0)}`;
 
-    <table>
+    // result.appendChild(generateSubstatTable());
+    const st = document.getElementById("substat-table");
+    st.innerHTML = "";
+    st.appendChild(generateSubstatTable());
+    //     document.getElementById(
+    //         "disclaimer"
+    //     ).innerHTML = `<p>* Base: Does not account for other multipliers, including those from W-Engine passives. ATK and AP only.</p>`;
+    // }
+}
+
+function generateSubstatTable() {
+    const table = document.createElement("table");
+    table.innerHTML = `
+        <tr><th colspan="6">Anomaly Damage Increase</th></tr>
         <tr>
-            <th colspan="6">Anomaly DMG increase</th>
-        </tr>
-        <tr>
-            <th></th>
+            <th>Stat</th>
             <th>-</th>
             <th>+1</th>
             <th>+2</th>
             <th>+3</th>
             <th>+4</th>
         </tr>
-        <tr>
-            <th>ATK</th>
-            <td id="atk-cell-0">${calculateAttackIncrease(1)}%</td>
-            <td id="atk-cell-1">${calculateAttackIncrease(2)}%</td>
-            <td id="atk-cell-2">${calculateAttackIncrease(3)}%</td>
-            <td id="atk-cell-3">${calculateAttackIncrease(4)}%</td>
-            <td id="atk-cell-4">${calculateAttackIncrease(5)}%</td>
-        </tr>
-        <tr>
-            <th>AP</th>
-            <td id="ap-cell-0">${calculateAnomalyIncrease(1)}%</td>
-            <td id="ap-cell-1">${calculateAnomalyIncrease(2)}%</td>
-            <td id="ap-cell-2">${calculateAnomalyIncrease(3)}%</td>
-            <td id="ap-cell-3">${calculateAnomalyIncrease(4)}%</td>
-            <td id="ap-cell-4">${calculateAnomalyIncrease(5)}%</td>
-        </tr>
-    </table>
     `;
+    const attackRow = document.createElement("tr");
+    attackRow.appendChild(
+        Object.assign(document.createElement("th"), { textContent: "ATK" })
+    );
 
-    document.getElementById(
-        "disclaimer"
-    ).innerHTML = `<p>* Base: Does not account for other multipliers, including those from W-Engine passives. ATK and AP only.</p>`;
+    for (let i = 1; i <= 5; i++) {
+        const td = document.createElement("td");
+        td.textContent = `${calculateAttackIncrease(i * 3)}%`;
+        attackRow.appendChild(td);
+    }
+
+    const anomalyRow = document.createElement("tr");
+    anomalyRow.appendChild(
+        Object.assign(document.createElement("th"), { textContent: "AP" })
+    );
+
+    for (let i = 1; i <= 5; i++) {
+        const td = document.createElement("td");
+        td.textContent = `${calculateAnomalyIncrease(i)}%`;
+        anomalyRow.appendChild(td);
+    }
+
+    table.appendChild(attackRow);
+    table.appendChild(anomalyRow);
+
+    return table;
 }
 
-function calculateTotalAttack(substatValue) {
+function calculateTotalAttack(substatValue = 0) {
+    state.calculate();
+    calculateEnginePassiveIncrease();
     let attack =
         state.baseAttack *
-            (1 + (state.attackIncreasePercentage + 3 * substatValue) / 100) *
+            (1 + (state.attackIncreasePercentage + substatValue) / 100) *
             (1 + state.engineAttackIncrease / 100) +
         state.attackBuffIncrease;
-    if (character.value === "jane") {
+    if (state.selectedCharacter === "jane") {
         const ap = calculateTotalAnomaly();
         if (ap > 120) {
             let increase = (ap - 120) * 2;
             increase > 600 ? (attack += 600) : (attack += increase);
         }
     }
-    console.log(attack);
     return attack;
 }
 
 function calculateAttackIncrease(substatValue) {
-    return (
-        100 -
-        (calculateTotalAttack(0) / calculateTotalAttack(substatValue)) * 100
-    ).toFixed(2);
+    const baseAttack = calculateTotalAttack(0);
+    const newValue = calculateTotalAttack(substatValue);
+
+    return (((newValue - baseAttack) / baseAttack) * 100).toFixed(2);
 }
 
 function calculateTotalAnomaly() {
@@ -266,35 +279,6 @@ function calculateTotalAnomaly() {
 function calculateAnomalyIncrease(substatValue) {
     return (((9 * substatValue) / calculateTotalAnomaly()) * 100).toFixed(2);
 }
-
-//     let totalAttack =
-//         state.baseAttack *
-//             (1 + state.attackIncreasePercentage / 100) *
-//             (1 + state.engineAttackIncrease / 100) +
-//         state.attackBuffIncrease;
-//     let plusThree =
-//         state.baseAttack *
-//             (1 + (state.attackIncreasePercentage + 3) / 100) *
-//             (1 + state.engineAttackIncrease / 100) +
-//         state.attackBuffIncrease;
-//     if (character.value === "jane") {
-//         totalAttack += 600;
-//         plusThree += 600;
-//     }
-//     const attackIncrease = (100 - (totalAttack / plusThree) * 100).toFixed(2);
-// }
-
-/* <h2>3% ATK: +${
-                        attackIncrease > 3.0 ? "3" : attackIncrease
-                    }% Anomaly DMG
-                    <h2>9 AP: +${
-                        apIncrease > 900 ? "?" : apIncrease
-                    }% Anomaly DMG
-                    */
-
-const calculateButton = document.getElementById("calc-btn");
-
-calculateButton.addEventListener("click", () => calculateStatValue());
 
 window.onload = () => {
     document.querySelectorAll("form, input").forEach((f) => {
@@ -310,6 +294,29 @@ document
     .getElementById("reset-btn")
     .addEventListener("click", () => window.location.reload());
 
-function baseAnomalyDamage() {
-    const selectedCharacter = character.value;
-}
+let activeCharBtn = null;
+
+document.querySelectorAll(".character-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+        if (activeCharBtn) {
+            activeCharBtn.classList.remove("selected");
+        }
+        button.classList.add("selected");
+        state.selectedCharacter = button.id;
+        state.baseCharacterAttack = characterData[button.id].baseAttack;
+        activeCharBtn = button;
+        validateDataInput();
+    });
+});
+
+document.querySelectorAll(".team-btn").forEach((button) => {
+    button.addEventListener("click", () => {
+        if (button.classList.contains("selected")) {
+            button.classList.remove("selected");
+        } else {
+            button.classList.add("selected");
+        }
+        state.calculateBuffs();
+        calculateAnomalyDamage();
+    });
+});
