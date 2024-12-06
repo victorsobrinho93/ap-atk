@@ -177,13 +177,13 @@ function calculateAnomalyDamage() {
         return false;
 
     const result = document.getElementById("result");
-    const stats = document.getElementById("stat-count");
+    // const stats = document.getElementById("stat-count");
     let _attack = calculateTotalAttack(0);
     let _anomaly = calculateTotalAnomaly();
 
-    stats.innerHTML = `Estimated Combat Stats - <b>ATK</b>: ${_attack.toFixed(
-        0
-    )} <b>AP</b>: ${_anomaly}`;
+    // stats.innerHTML = `Estimated Combat Stats</br><b>ATK</b>: ${_attack.toFixed(
+    //     0
+    // )} <b>AP</b>: ${_anomaly}`;
 
     const { proc, multiplier, color } =
         anomaly[characterData[state.selectedCharacter].element];
