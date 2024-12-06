@@ -27,8 +27,8 @@
     <body>
         <main id="container">
             <section id="base-calculation">
-                <fieldset>
-                    <legend>Character</legend>
+                <h3>Select Character</h3>
+                <div id="characters">
                     <button type="button" class="character-btn" id="jane">
                         <img
                             src="images/thumb_jane_doe.png"
@@ -55,16 +55,17 @@
                             src="images/thumb_piper.png"
                             class="character-img a-rank" />
                     </button>
-                </fieldset>
+                </div>
 
                 <div id="select-engine">
                     <form id="engine-form">
-                        <label for="w-engine">W-engine</label>
                         <select
                             name="w-engine"
                             id="w-engine"
                             class="data-input">
-                            <option value="">--</option>
+                            <option value="" disabled selected>
+                                Select W-Engine
+                            </option>
                             <option value="stinger">Sharpened Stinger</option>
                             <option value="roaring">Roaring Ride</option>
                             <option value="rainforest">
@@ -80,25 +81,29 @@
                         </select>
                     </form>
                 </div>
-                <div class="input-fieldset">
-                    <label for="attack">Attack </label>
-                    <input
-                        type="text"
-                        name="attack"
-                        id="attack"
-                        class="data-input"
-                        placeholder="0" />
-                    <label for="anomaly">Anomaly Proficiency</label>
-                    <input
-                        type="text"
-                        name="anomaly"
-                        id="anomaly"
-                        class="data-input"
-                        placeholder="0" />
+                <div class="stat-fieldset">
+                    <div class="stat-input">
+                        <label for="attack">Attack </label>
+                        <input
+                            type="text"
+                            name="attack"
+                            id="attack"
+                            class="data-input"
+                            placeholder="0" />
+                    </div>
+                    <div class="stat-input">
+                        <label for="anomaly">Anomaly Proficiency</label>
+                        <input
+                            type="text"
+                            name="anomaly"
+                            id="anomaly"
+                            class="data-input"
+                            placeholder="0" />
+                    </div>
                 </div>
 
-                <fieldset>
-                    <legend>Team Buffs</legend>
+                <h3>Select Teammates</h3>
+                <div class="set-team">
                     <button type="button" class="team-btn" id="soukaku">
                         <img
                             src="images/thumb_soukaku.png"
@@ -119,20 +124,15 @@
                             src="images/thumb_caesar.png"
                             class="character-img s-rank" />
                     </button>
-                </fieldset>
-
+                </div>
                 <div>
-                    <h3 id="stat-count"></h3>
                     <h2 id="result"></h2>
+                    <h3 id="stat-count"></h3>
                 </div>
 
-                <div>
-                    <!-- <button type="button" id="calc-btn" disabled>
-                        CALCULATE
-                    </button> -->
+                <!-- <div class="buttons">
                     <button type="button" id="reset-btn">RESET</button>
-                </div>
-                <p id="disclaimer"></p>
+                </div> -->
             </section>
             <section id="substat-table"></section>
         </main>

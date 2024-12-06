@@ -64,6 +64,7 @@ body {
     display: flex;
     gap: 12px;
     align-items: center;
+    justify-content: space-around;
 }
 
 select {
@@ -73,21 +74,6 @@ select {
 td {
     padding: 5px;
     min-width: 4.2rem;
-}
-
-fieldset {
-    display: flex;
-    width: 0px;
-    gap: 1rem;
-    padding: 0.5rem;
-    border-radius: 8px;
-    border: 1px solid #575757;
-    border: none;
-}
-
-#soukaku-vortex {
-    color: #04d9ff;
-    letter-spacing: 4px;
 }
 
 .character-img {
@@ -111,17 +97,10 @@ fieldset {
     filter: grayscale();
 }
 
+.character-btn:hover,
+.team-btn:hover,
 .selected {
-    filter: none !important;
-}
-
-input {
-    width: 5rem;
-    text-align: center;
-    padding: 5px;
-    background-color: #232323;
-    border: 2px solid #343434;
-    border-radius: 8px;
+    filter: none;
 }
 
 select {
@@ -137,21 +116,26 @@ button {
     color: black;
     border: none;
     border-radius: 2rem;
+    /* width: 10rem; */
 }
 
 #reset-btn {
     background-color: #575757;
+    width: 12rem;
 }
 
-#calc-btn:disabled {
-    filter: grayscale();
+#reset-btn:hover {
+    background-color: #fff;
 }
 
-#calc-btn {
-    background-color: yellow;
+.stat-fieldset {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
 }
 
-.input-fieldset {
+.stat-input {
     display: flex;
     align-items: center;
     gap: 1rem;
@@ -160,4 +144,34 @@ button {
 h2 {
     font-size: 2rem;
     font-weight: 700;
+}
+
+#characters {
+    display: flex;
+    justify-content: space-around;
+}
+
+input {
+    /* flex: 1; */
+    width: 7rem;
+    text-align: center;
+    padding: 5px;
+    background-color: #232323;
+    border: 2px solid #343434;
+    border-radius: 8px;
+}
+
+.set-team {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.buttons {
+    display: flex;
+    justify-content: center;
+}
+
+#stat-count,
+b {
+    color: #575757;
 }

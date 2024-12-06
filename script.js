@@ -46,12 +46,12 @@ function createElementSet(textContent, htmlFor) {
 }
 
 function renderEngineRating() {
-    const { label, select } = createElementSet("R", "engine-r");
+    const { select } = createElementSet("R", "engine-r");
 
     for (let i = 1; i <= 5; i++) {
         const option = document.createElement("option");
         option.value = i;
-        option.textContent = i;
+        option.textContent = `${i}-Star${i > 1 ? "s" : ""}`;
         select.appendChild(option);
     }
 
@@ -61,7 +61,7 @@ function renderEngineRating() {
         state.engineSelectedRating = +select.value;
     });
 
-    engineForm.appendChild(label);
+    // engineForm.appendChild(label);
     engineForm.appendChild(select);
 }
 
@@ -71,7 +71,7 @@ function renderEngineStacks(maximumStacks) {
     for (let i = 0; i <= maximumStacks; i++) {
         const option = document.createElement("option");
         option.value = i;
-        option.textContent = i;
+        option.textContent = `${i} stack${i !== 1 ? "s" : ""}`;
         if (i === Math.ceil(maximumStacks / 2)) {
             option.setAttribute("selected", "selected");
             state.enginePassiveMultiplier = i;
@@ -83,16 +83,16 @@ function renderEngineStacks(maximumStacks) {
         state.enginePassiveMultiplier = +select.value;
     });
 
-    engineForm.appendChild(label);
+    // engineForm.appendChild(label);
     engineForm.appendChild(select);
 }
 
 function renderPassiveUptime() {
-    const { label, select } = createElementSet("Uptime", "engine-s");
+    const { select } = createElementSet("Uptime", "engine-s");
     for (let i = 0; i <= 100; i += 25) {
         const option = document.createElement("option");
         option.value = i / 100;
-        option.textContent = `${i}%`;
+        option.textContent = `${i}% uptime`;
         if (i === 50) {
             option.setAttribute("selected", "selected");
             state.enginePassiveMultiplier = i / 100;
@@ -104,7 +104,7 @@ function renderPassiveUptime() {
         state.enginePassiveMultiplier = +select.value;
     });
 
-    engineForm.appendChild(label);
+    // engineForm.appendChild(label);
     engineForm.appendChild(select);
 }
 
@@ -181,7 +181,7 @@ function calculateAnomalyDamage() {
     let _attack = calculateTotalAttack(0);
     let _anomaly = calculateTotalAnomaly();
 
-    stats.innerHTML = `<b>ATK</b>: ${_attack.toFixed(
+    stats.innerHTML = `Estimated Combat Stats - <b>ATK</b>: ${_attack.toFixed(
         0
     )} <b>AP</b>: ${_anomaly}`;
 
@@ -192,14 +192,9 @@ function calculateAnomalyDamage() {
         proc === "Assault" ? "DMG" : "DPS"
     }: ${((multiplier * _attack * _anomaly) / 100).toFixed(0)}`;
 
-    // result.appendChild(generateSubstatTable());
     const st = document.getElementById("substat-table");
     st.innerHTML = "";
     st.appendChild(generateSubstatTable());
-    //     document.getElementById(
-    //         "disclaimer"
-    //     ).innerHTML = `<p>* Base: Does not account for other multipliers, including those from W-Engine passives. ATK and AP only.</p>`;
-    // }
 }
 
 function generateSubstatTable() {
@@ -290,9 +285,9 @@ window.onload = () => {
     });
 };
 
-document
-    .getElementById("reset-btn")
-    .addEventListener("click", () => window.location.reload());
+// document
+//     .getElementById("reset-btn")
+//     .addEventListener("click", () => window.location.reload());
 
 let activeCharBtn = null;
 
